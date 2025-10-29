@@ -73,8 +73,8 @@ module Vkontakte
         a.follow_meta_refresh
         a.log = Logger.new($stdout) if @log
 
-        a.agent.set_socks(@proxy.addr, @proxy.port) if @proxy&.socks?
-        a.agent.set_proxy(@proxy.addr, @proxy.port) if @proxy&.http?
+        a.agent.set_socks(@proxy.addr, @proxy.port, @proxy.user, @proxy.password) if @proxy&.socks?
+        a.agent.set_proxy(@proxy.addr, @proxy.port, @proxy.user, @proxy.password) if @proxy&.http?
       end
     end
 
