@@ -16,7 +16,6 @@ Gem::Specification.new do |gem|
   gem.name          = 'vkontakte_client'
   gem.require_paths = ['lib']
   gem.version       = Vkontakte::VERSION
-  gem.required_ruby_version = '>= 3.2.0'
   gem.add_runtime_dependency 'faraday', '~> 2.14'
   gem.add_runtime_dependency 'faraday-typhoeus', '~> 2.0'
   gem.add_runtime_dependency 'mechanize', '~> 2.8', '>= 2.8.0'
