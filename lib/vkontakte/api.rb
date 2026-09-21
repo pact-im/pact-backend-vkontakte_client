@@ -48,43 +48,29 @@ module Vkontakte
     end
 
     def make_request(url, params)
-      uri = URI(url)
-      use_ssl = uri.scheme == 'https'
+      connection.post(url, params)
+    end
 
-      request = Net::HTTP::Post.new(uri)
-      request.form_data = params
-
-      if @proxy
-        if @proxy.http?
-          Net::HTTP.start(
-            uri.hostname,
-            uri.port,
-            @proxy.addr,
-            @proxy.port,
-            @proxy.user,
-            @proxy.password,
-            use_ssl:,
-            read_timeout: timeout,
-            open_timeout: timeout
-          ) do |http|
-            http.request(request)
-          end
-        elsif @proxy.socks?
-          Net::HTTP.socks_proxy(@proxy.addr, @proxy.port, username: @proxy.user, password: @proxy.password).start(uri.hostname, uri.port, use_ssl:) do |http|
-            http.request(request)
-          end
-        end
-      else
-        Net::HTTP.start(
-          uri.hostname,
-          uri.port,
-          use_ssl:,
-          read_timeout: timeout,
-          open_timeout: timeout
-        ) do |http|
-          http.request(request)
-        end
+    def connection
+      @connection ||= Faraday.new do |builder|
+        builder.proxy = proxy_options
+        builder.options.open_timeout = timeout
+        builder.options.timeout = timeout
+        builder.options.params_encoder = Faraday::FlatParamsEncoder
+        builder.request :url_encoded
+        builder.adapter :typhoeus
       end
+    end
+
+    def proxy_options
+      return nil if proxy.blank?
+
+      scheme = proxy.socks? ? 'socks5h' : 'http'
+      {
+        uri: URI::Generic.build(scheme: scheme, host: proxy.addr, port: proxy.port),
+        user: proxy.user,
+        password: proxy.password
+      }
     end
   end
 end
