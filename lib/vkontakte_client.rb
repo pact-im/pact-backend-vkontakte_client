@@ -2,7 +2,6 @@
 
 require 'json'
 require 'faraday'
-require 'faraday/typhoeus'
 require 'net/http'
 require 'mechanize'
 require 'socksify'

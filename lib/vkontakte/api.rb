@@ -6,7 +6,7 @@ module Vkontakte
   # https://vk.ru/dev/api_requests
   #
   class API
-    attr_reader :access_token, :proxy, :api_version, :timeout
+    attr_reader :access_token, :proxy, :api_version, :timeout, :adapter
     attr_accessor :lang
 
     def initialize(
@@ -14,13 +14,15 @@ module Vkontakte
       proxy: nil,
       api_version: Vkontakte::API_VERSION,
       lang: 'ru',
-      timeout: 60
+      timeout: 60,
+      adapter: Faraday.default_adapter
     )
       @access_token = access_token
       @proxy = proxy
       @api_version = api_version
       @lang = lang
       @timeout = timeout
+      @adapter = adapter
     end
 
     def method_missing(method, *params)
@@ -58,14 +60,14 @@ module Vkontakte
         builder.options.timeout = timeout
         builder.options.params_encoder = Faraday::FlatParamsEncoder
         builder.request :url_encoded
-        builder.adapter :typhoeus
+        builder.adapter adapter
       end
     end
 
     def proxy_options
-      return nil if proxy.blank?
+      return unless proxy
 
-      scheme = proxy.socks? ? 'socks5h' : 'http'
+      scheme = proxy.socks? ? 'socks5h' : proxy.type.to_s
       {
         uri: URI::Generic.build(scheme: scheme, host: proxy.addr, port: proxy.port),
         user: proxy.user,
