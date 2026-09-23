@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'json'
+require 'faraday'
 require 'net/http'
 require 'mechanize'
 require 'socksify'
