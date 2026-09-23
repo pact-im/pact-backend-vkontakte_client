@@ -17,6 +17,7 @@ Gem::Specification.new do |gem|
   gem.require_paths = ['lib']
   gem.version       = Vkontakte::VERSION
   gem.required_ruby_version = '>= 3.2.0'
+  gem.add_runtime_dependency 'faraday', '~> 2.14'
   gem.add_runtime_dependency 'mechanize', '~> 2.8', '>= 2.8.0'
   gem.add_runtime_dependency 'socksify', '~> 1.7', '>= 1.7.0'
   gem.metadata['rubygems_mfa_required'] = 'true'
